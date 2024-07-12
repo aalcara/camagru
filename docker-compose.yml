@@ -12,7 +12,7 @@ services:
       - MYSQL_HOST=db
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DB=${MYSQL_DATABASE}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     networks:
       - camagru-network
 
