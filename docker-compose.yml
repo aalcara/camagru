@@ -1,7 +1,8 @@
-version: '3.1'
+version: "3.1"
 
 services:
   app:
+    container_name: camagru_app
     build:
       context: ./app
       dockerfile: Dockerfile
@@ -16,6 +17,7 @@ services:
       - camagru-network
 
   web:
+    container_name: camagru_web
     build:
       context: ./nginx
       dockerfile: Dockerfile
@@ -30,6 +32,7 @@ services:
       - camagru-network
 
   db:
+    container_name: camagru_db
     build:
       context: ./db
       dockerfile: Dockerfile
