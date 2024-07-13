@@ -2,7 +2,7 @@
 <html lang="en">
 
 <body>
-	<h2>Login</h2>
+	<h2>Register</h2>
 
 	<?php if (isset($data['errorMsg'])): ?>
 		<div class="error-msg">

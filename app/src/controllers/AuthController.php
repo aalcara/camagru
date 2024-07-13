@@ -10,12 +10,22 @@ class AuthController extends Controller
 
 	public function login()
 	{
-		$this->view('auth/index');
-	}
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			$username = $_POST['username'];
+			$password = $_POST['password'];
 
-	public function signup()
-	{
-		$this->view('auth/signup');
+			$userModel = $this->model("User");
+			$user = $userModel->login($username, $password);
+
+			if ($user) {
+				echo "success";
+			} else {
+				$this->view('auth/index', ['errorMsg' => "wrong username or password"]);
+			}
+		} else {
+			$this->view('auth/index');
+
+		}
 	}
 
 	public function register()
@@ -27,7 +37,7 @@ class AuthController extends Controller
 
 			if (!$username || !$email || !$password) {
 				echo "cant have empty fields";
-			};
+			}
 
 			$userModel = $this->model("User");
 
@@ -38,8 +48,10 @@ class AuthController extends Controller
 
 			} else {
 				$errorMsg = "username or email already in use";
-				$this->view('auth/signup', ['errorMsg' => $errorMsg]);
+				$this->view('auth/register', ['errorMsg' => $errorMsg]);
 			}
+		} else {
+			$this->view('auth/register');
 		}
 	}
 }

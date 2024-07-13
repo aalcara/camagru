@@ -17,6 +17,20 @@ class User extends Model
 		return $stmt->get_result()->fetch_assoc();
 	}
 
+	public function login($username, $password)
+	{
+		$stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+		$stmt->bind_param('s', $username);
+		$stmt->execute();
+		$result = $stmt->get_result()->fetch_assoc();
+
+		if ($result && password_verify($password, $result['password'])) {
+			return $result;
+		} else {
+			return null;
+		}
+	}
+
 	public function getAllUsers()
 	{
 		$stmt = $this->db->prepare("SELECT * FROM users");
