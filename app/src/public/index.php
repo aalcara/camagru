@@ -2,6 +2,7 @@
 require_once '../config.php';
 require_once '../controllers/Controller.php';
 require_once '../models/Model.php';
+require_once '../helpers/session_helper.php';
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $requestUri = filter_var($requestUri, FILTER_SANITIZE_URL);

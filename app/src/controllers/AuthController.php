@@ -28,7 +28,7 @@ class AuthController extends Controller
 		}
 	}
 
-	public function register()
+	public function signup()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$username = $_POST['username'];
@@ -48,10 +48,18 @@ class AuthController extends Controller
 
 			} else {
 				$errorMsg = "username or email already in use";
-				$this->view('auth/register', ['errorMsg' => $errorMsg]);
+				$this->view('auth/signup', ['errorMsg' => $errorMsg]);
 			}
 		} else {
-			$this->view('auth/register');
+			$this->view('auth/signup');
 		}
+	}
+
+	public function logout()
+	{
+		session_unset();
+		session_destroy();
+		header('Location: /home');
+		exit;
 	}
 }
