@@ -11,6 +11,7 @@ class AuthController extends Controller
 	public function login()
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 
@@ -18,14 +19,26 @@ class AuthController extends Controller
 			$user = $userModel->login($username, $password);
 
 			if ($user) {
-				echo "success";
-			} else {
-				$this->view('auth/index', ['errorMsg' => "wrong username or password"]);
-			}
-		} else {
-			$this->view('auth/index');
+				$_SESSION['user_id'] = $user['id'];
+				$_SESSION['username'] = $user['username'];
 
+				if (isset($_SESSION['redirect_url'])) {
+					$redirectUrl = $_SESSION['redirect_url'];
+					unset($_SESSION['redirect_url']);
+					header("Location: $redirectUrl");
+				} else {
+					header('Location: /home');
+				}
+				exit();
+			} else {
+				$errorMsg = "Invalid username or password";
+			}
 		}
+		if ($_SESSION['user_id']) {
+			header('Location: /home');
+			exit();
+		}
+		$this->view('auth/index', ['errorMsg' => $errorMsg]);
 	}
 
 	public function signup()
