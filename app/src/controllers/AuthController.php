@@ -5,11 +5,19 @@ class AuthController extends Controller
 
 	public function index()
 	{
+		if ($_SERVER['REQUEST_METHOD'] !== 'GET' || $_SESSION['user_id']) {
+			header('Location: /');
+			exit();
+		}
 		$this->view('auth/index');
 	}
 
 	public function login()
 	{
+		if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_SESSION['user_id']) {
+			header('Location: /home');
+			exit();
+		}
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 			$username = $_POST['username'];
@@ -33,10 +41,6 @@ class AuthController extends Controller
 			} else {
 				$errorMsg = "Invalid username or password";
 			}
-		}
-		if ($_SESSION['user_id']) {
-			header('Location: /home');
-			exit();
 		}
 		$this->view('auth/index', ['errorMsg' => $errorMsg]);
 	}

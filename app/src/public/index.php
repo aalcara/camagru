@@ -18,9 +18,8 @@ if (file_exists("../controllers/$controllerName.php")) {
 	$controller = new $controllerName();
 	if (method_exists($controller, $methodName)) {
 		call_user_func_array([$controller, $methodName], $params);
-	} else {
-		require_once 'error_handler.php';
+		exit;
 	}
-} else {
-	require_once 'error_handler.php';
 }
+require_once "../controllers/ErrorController.php";
+call_user_func_array([new ErrorController(), "error404"], $params);
