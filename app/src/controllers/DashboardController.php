@@ -2,11 +2,18 @@
 
 class DashboardController extends Controller
 {
+	private static $canvasWidth;
+	private static $canvasHeight;
+
+	public function __construct() {
+        $this->canvasWidth = 320;
+        $this->canvasHeight = 240;
+    }
 
 	public function index()
 	{
 		checkLogin();
-		$this->view("dashboard/index");
+		$this->view("dashboard/index", ["canvasWidth" => $this->canvasWidth, "canvasHeight" => $this->canvasHeight]);
 	}
 
 	public function upload()

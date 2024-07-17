@@ -7,6 +7,7 @@ function clicou() {
 }
 
 let showing = null;
+let animationFrameHandler = 0;
 
 function getCanvasContext() {
   const canvas = document.getElementById("canvas");
@@ -14,11 +15,16 @@ function getCanvasContext() {
   return ctx;
 }
 
-function drawCanvas(ctx, img) {
+function drawCanvas(ctx2, img) {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (img != null) {
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   }
+}
+function updateImageToUpload(src) {
+  document.getElementById("tempImagePath").value = src;
 }
 
 function showConfirmButton() {
@@ -42,6 +48,7 @@ function stopWebcam(ctx) {
   video.pause();
   video.srcObject.getTracks()[0].stop();
   document.body.removeChild(video);
+  cancelAnimationFrame(animationFrameHandler);
 
   document.getElementById("webcamButton").innerHTML = "Use Your Webcam";
   hideCaptureButton();
@@ -71,7 +78,7 @@ function onActivateWebcam() {
       function drawFrame() {
         if (showing === "video") {
           drawCanvas(ctx, video);
-          requestAnimationFrame(drawFrame);
+          animationFrameHandler = requestAnimationFrame(drawFrame);
         }
       }
 
@@ -96,8 +103,9 @@ function onCaptureWebcam() {
 function onUploadImage(event) {
   const file = event.target.files[0];
   const reader = new FileReader();
+  reader.readAsDataURL(file);
   reader.onload = function () {
-    previewImage(reader.readAsDataURL(file));
+    previewImage(reader.result);
   };
 }
 
@@ -111,8 +119,7 @@ function previewImage(src) {
   img.src = src;
   img.onload = function () {
     drawCanvas(ctx, img);
+    showConfirmButton();
+    updateImageToUpload(img.src);
   };
-  showConfirmButton();
-
-  document.getElementById("tempImagePath").value = src;
 }
