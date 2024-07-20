@@ -8,21 +8,49 @@ function clicou() {
 
 let showing = null;
 let animationFrameHandler = 0;
+const canvas = document.getElementById("canvas");
+const backgroundCanvas = document.createElement("canvas");
+backgroundCanvas.height = canvas.height;
+backgroundCanvas.width = canvas.width;
+const backgroundCtx = backgroundCanvas.getContext("2d");
 
-function getCanvasContext() {
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  return ctx;
+function resizeImage(img) {
+  let factorX = img.width / canvas.width;
+  let factorY = img.height / canvas.height;
+  let factor = factorX > factorY ? factorX : factorY;
+  img.width = Math.floor(img.width / factor);
+  img.height = Math.floor(img.height / factor);
+  return img;
 }
 
-function drawCanvas(ctx2, img) {
-  const canvas = document.getElementById("canvas");
+function drawCanvas(img) {
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (img != null) {
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(
+      img,
+      (canvas.width - img.width) / 2,
+      (canvas.height - img.height) / 2,
+      img.width,
+      img.height
+    );
   }
 }
+
+function drawBackgroundCanvas(img) {
+  backgroundCtx.clearRect(0, 0, canvas.width, canvas.height);
+  if (img != null) {
+
+    backgroundCtx.drawImage(
+      img,
+      (canvas.width - img.width) / 2,
+      (canvas.height - img.height) / 2,
+      img.width,
+      img.height
+    );
+  }
+}
+
 function updateImageToUpload(src) {
   document.getElementById("tempImagePath").value = src;
 }
@@ -43,7 +71,7 @@ function hideCaptureButton() {
   document.getElementById("captureButton").style.display = "none";
 }
 
-function stopWebcam(ctx) {
+function stopWebcam() {
   const video = document.getElementById("webcamVideo");
   video.pause();
   video.srcObject.getTracks()[0].stop();
@@ -52,16 +80,15 @@ function stopWebcam(ctx) {
 
   document.getElementById("webcamButton").innerHTML = "Use Your Webcam";
   hideCaptureButton();
-  drawCanvas(ctx, null);
+  drawCanvas(null);
   showing = null;
 }
 
 function onActivateWebcam() {
   hideConfirmButton();
-  const ctx = getCanvasContext();
 
   if (showing === "video") {
-    stopWebcam(ctx);
+    stopWebcam();
     return;
   }
   video = document.createElement("video");
@@ -77,7 +104,9 @@ function onActivateWebcam() {
 
       function drawFrame() {
         if (showing === "video") {
-          drawCanvas(ctx, video);
+          // drawCanvas(video);
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
           animationFrameHandler = requestAnimationFrame(drawFrame);
         }
       }
@@ -93,10 +122,16 @@ function onActivateWebcam() {
 }
 
 function onCaptureWebcam() {
-  const ctx = getCanvasContext();
-
-  const frame = canvas.toDataURL("image/png");
-  stopWebcam(ctx);
+  const video = document.getElementById("webcamVideo");
+  backgroundCtx.drawImage(
+    video,
+    0,
+    0,
+    backgroundCanvas.width,
+    backgroundCanvas.height
+  );
+  const frame = backgroundCanvas.toDataURL("image/png");
+  stopWebcam();
   previewImage(frame);
 }
 
@@ -112,14 +147,16 @@ function onUploadImage(event) {
 function previewImage(src) {
   const ctx = getCanvasContext();
   if (showing === "video") {
-    stopWebcam(ctx);
+    stopWebcam();
   }
   showing = "image";
-  const img = new Image();
+  let img = new Image();
   img.src = src;
   img.onload = function () {
-    drawCanvas(ctx, img);
+    img = resizeImage(img);
+    drawBackgroundCanvas(img);
+    drawCanvas(img);
     showConfirmButton();
-    updateImageToUpload(img.src);
+    updateImageToUpload(backgroundCanvas.toDataURL());
   };
 }
