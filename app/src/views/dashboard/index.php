@@ -14,4 +14,4 @@ OR
 	<input type="hidden" id="tempImagePath" name="image">
 	<button type="submit">Upload Image</button>
 </form>
-<script src="dashboard.js"></script>
+<script src="../dashboard.js"></script>

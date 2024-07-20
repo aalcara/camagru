@@ -17,25 +17,36 @@ class DashboardController extends Controller
 		$this->view("dashboard/index", ["canvasWidth" => $this->canvasWidth, "canvasHeight" => $this->canvasHeight]);
 	}
 
-	public function upload()
+	public function upload($params)
 	{
 		if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-			header('Location: /dashboard');
+			// TODO: ler alguma image pelo id
+			echo $params;
+			// header('Location: /dashboard');
 			exit;
 		}
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-			// print_r($_POST);
+
+			if (!isset($_POST['image'])) {
+				echo "No image data recieved";
+			}
 			$imageData = $_POST['image'];
-			$imageId = uniqid();
 
 			[$type, $imageData] = explode(';', $imageData);
-            [, $imageData]      = explode(',', $imageData);
+			[, $imageData] = explode(',', $imageData);
 
-            $imageData = base64_decode($imageData);
+			$fileHash = hash('sha256', $imageData);
+			$filePath = "../../uploads/{$fileHash}.png";
 
-			$filePath = 'uploads/' . $imageId . '.png';
-            file_put_contents($filePath, $imageData);
-			echo "sucesso";
+			$imageModel = $this->model("Image");
+			$imageId = $imageModel->createImage($_SESSION['user_id'], $fileHash);
+
+			if (file_put_contents($filePath, $imageData) && $imageId)  {
+				header("Location: /dashboard/upload?imageId={$imageId}");
+				exit();
+			} else {
+				echo "Fail uploading image";
+			}
 		}
 	}
 }

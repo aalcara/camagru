@@ -6,12 +6,13 @@ require_once '../helpers/session_helper.php';
 
 $requestUri = $_SERVER['REQUEST_URI'];
 $requestUri = filter_var($requestUri, FILTER_SANITIZE_URL);
+[$requestUri, $params] = explode('?', $requestUri);
 $requestUri = $requestUri == "/" ? "home" : trim($requestUri, '/');
 $url = explode('/', $requestUri);
 
 $controllerName = ucfirst(array_shift($url)) . 'Controller';
 $methodName = array_shift($url) ?? 'index';
-$params = $url;
+$params = explode('&', $params);
 
 if (file_exists("../controllers/$controllerName.php")) {
 	require_once "../controllers/$controllerName.php";

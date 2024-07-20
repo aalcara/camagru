@@ -3,9 +3,10 @@ class User extends Model
 {
 	public function createUser($username, $email, $password)
 	{
+		$userId = uniqid("", true);
 		$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-		$stmt = $this->db->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-		$stmt->bind_param('sss', $username, $email, $hashedPassword);
+		$stmt = $this->db->prepare("INSERT INTO users (id, username, email, password) VALUES (?, ?, ?, ?)");
+		$stmt->bind_param('ssss',$userId, $username, $email, $hashedPassword);
 		return $stmt->execute();
 	}
 
