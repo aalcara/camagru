@@ -25,8 +25,17 @@ class DashboardController extends Controller
 		}
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			// print_r($_POST);
-			$image = $_POST['image'];
-			$this->view("dashboard/upload", ["image" => $image]);
+			$imageData = $_POST['image'];
+			$imageId = uniqid();
+
+			[$type, $imageData] = explode(';', $imageData);
+            [, $imageData]      = explode(',', $imageData);
+
+            $imageData = base64_decode($imageData);
+
+			$filePath = 'uploads/' . $imageId . '.png';
+            file_put_contents($filePath, $imageData);
+			echo "sucesso";
 		}
 	}
 }

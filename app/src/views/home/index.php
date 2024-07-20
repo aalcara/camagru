@@ -1,7 +1,6 @@
-
 <h1>Bem-vindo ao Camagru!</h1>
 
-<h1>
+<div>
 	<?php if (isset($data['users']) && is_array($data['users'])): ?>
 		<ul>
 			<?php foreach ($data['users'] as $user): ?>
@@ -11,5 +10,4 @@
 	<?php else: ?>
 		<p>No user data.</p>
 	<?php endif; ?>
-</h1>
-
+</div>

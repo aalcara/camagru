@@ -47,6 +47,10 @@ class AuthController extends Controller
 
 	public function signup()
 	{
+		if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+			$this->view('auth/signup');
+		}
+		
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$username = $_POST['username'];
 			$email = $_POST['email'];
@@ -61,14 +65,13 @@ class AuthController extends Controller
 			$result = $userModel->createUser($username, $email, $password);
 
 			if ($result) {
-				echo "sucesso";
+				// TODO decidir o que fazer
+				header('Location: /auth/login');
+				exit();
 
-			} else {
-				$errorMsg = "username or email already in use";
-				$this->view('auth/signup', ['errorMsg' => $errorMsg]);
 			}
-		} else {
-			$this->view('auth/signup');
+			$errorMsg = "username or email already in use";
+			$this->view('auth/signup', ['errorMsg' => $errorMsg]);
 		}
 	}
 

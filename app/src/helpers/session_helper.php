@@ -6,7 +6,7 @@ function checkLogin()
 		
 		$_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 		
-		header('Location: auth/login');
+		header('Location: /auth/login');
 		exit();
 	}
 }
