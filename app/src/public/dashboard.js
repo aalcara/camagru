@@ -36,7 +36,6 @@ function drawCanvas(img) {
 function drawBackgroundCanvas(img) {
   backgroundCtx.clearRect(0, 0, canvas.width, canvas.height);
   if (img != null) {
-
     backgroundCtx.drawImage(
       img,
       (canvas.width - img.width) / 2,
@@ -103,7 +102,30 @@ function onActivateWebcam() {
 
       function drawFrame() {
         if (showing === "video") {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const videoAspectRatio = video.videoWidth / video.videoHeight;
+          const canvasAspectRatio = canvas.width / canvas.height;
+          let drawWidth, drawHeight, offsetX, offsetY;
+          if (videoAspectRatio > canvasAspectRatio) {
+            drawWidth = canvas.width;
+            drawHeight = canvas.width / videoAspectRatio;
+            offsetX = 0;
+            offsetY = (canvas.height - drawHeight) / 2;
+          } else {
+            drawWidth = canvas.height * videoAspectRatio;
+            drawHeight = canvas.height;
+            offsetX = (canvas.width - drawWidth) / 2;
+            offsetY = 0;
+          }
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
+          backgroundCtx.drawImage(
+            video,
+            offsetX,
+            offsetY,
+            drawWidth,
+            drawHeight
+          );
           animationFrameHandler = requestAnimationFrame(drawFrame);
         }
       }
@@ -119,13 +141,6 @@ function onActivateWebcam() {
 }
 
 function onCaptureWebcam() {
-  backgroundCtx.drawImage(
-    video,
-    0,
-    0,
-    backgroundCanvas.width,
-    backgroundCanvas.height
-  );
   const frame = backgroundCanvas.toDataURL("image/png");
   stopWebcam();
   previewImage(frame);
