@@ -7,7 +7,6 @@ OR
 <button id="webcamButton" onclick="onActivateWebcam()">Use Your Webcam</button>
 <br>
 <canvas id="canvas" width="<?php echo $data['canvasWidth']; ?>" height="<?php echo $data['canvasHeight']; ?>"></canvas>
-<button id="teste" onclick="clicou()">teste</button>
 <br>
 <button id="captureButton" onclick="onCaptureWebcam()" style="display:none;">Capture</button>
 

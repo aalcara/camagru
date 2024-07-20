@@ -1,18 +1,15 @@
-function clicou() {
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = "green";
-  ctx.fillRect(10, 10, 150, 100);
-}
-
 let showing = null;
 let animationFrameHandler = 0;
+
 const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
 const backgroundCanvas = document.createElement("canvas");
 backgroundCanvas.height = canvas.height;
 backgroundCanvas.width = canvas.width;
 const backgroundCtx = backgroundCanvas.getContext("2d");
+
+let video;
 
 function resizeImage(img) {
   let factorX = img.width / canvas.width;
@@ -24,7 +21,6 @@ function resizeImage(img) {
 }
 
 function drawCanvas(img) {
-  const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (img != null) {
     ctx.drawImage(
@@ -72,11 +68,14 @@ function hideCaptureButton() {
 }
 
 function stopWebcam() {
-  const video = document.getElementById("webcamVideo");
-  video.pause();
-  video.srcObject.getTracks()[0].stop();
-  document.body.removeChild(video);
-  cancelAnimationFrame(animationFrameHandler);
+
+  if (video) {
+    video.pause();
+    video.srcObject.getTracks()[0].stop();
+    document.body.removeChild(video);
+    cancelAnimationFrame(animationFrameHandler);
+    console.log("video", video);
+  }
 
   document.getElementById("webcamButton").innerHTML = "Use Your Webcam";
   hideCaptureButton();
@@ -104,8 +103,6 @@ function onActivateWebcam() {
 
       function drawFrame() {
         if (showing === "video") {
-          // drawCanvas(video);
-          const ctx = canvas.getContext("2d");
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
           animationFrameHandler = requestAnimationFrame(drawFrame);
         }
@@ -122,7 +119,6 @@ function onActivateWebcam() {
 }
 
 function onCaptureWebcam() {
-  const video = document.getElementById("webcamVideo");
   backgroundCtx.drawImage(
     video,
     0,
@@ -145,7 +141,6 @@ function onUploadImage(event) {
 }
 
 function previewImage(src) {
-  const ctx = getCanvasContext();
   if (showing === "video") {
     stopWebcam();
   }
