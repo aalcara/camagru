@@ -10,7 +10,7 @@ OR
 <br>
 <button id="captureButton" onclick="onCaptureWebcam()" style="display:none;">Capture</button>
 
-<form id="confirmForm" action="dashboard/upload" method="post" style="display:none;">
+<form id="confirmForm" action="/dashboard/upload" method="post" style="display:none;">
 	<input type="hidden" id="tempImagePath" name="image">
 	<button type="submit">Upload Image</button>
 </form>

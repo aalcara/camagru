@@ -17,4 +17,3 @@ CREATE TABLE IF NOT EXISTS images (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users (id)
 );
-
