@@ -23,26 +23,27 @@ class AuthController extends Controller
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 
-			$userModel = $this->model("User");
-			$user = $userModel->login($username, $password);
+			// TODO: validar inputs
+			$user_model = $this->model("User");
+			$user = $user_model->login($username, $password);
 
 			if ($user) {
 				$_SESSION['user_id'] = $user['id'];
 				$_SESSION['username'] = $user['username'];
 
 				if (isset($_SESSION['redirect_url'])) {
-					$redirectUrl = $_SESSION['redirect_url'];
+					$redirect_url = $_SESSION['redirect_url'];
 					unset($_SESSION['redirect_url']);
-					header("Location: $redirectUrl");
+					header("Location: $redirect_url");
 				} else {
 					header('Location: /home');
 				}
 				exit();
 			} else {
-				$errorMsg = "Invalid username or password";
+				$error_msg = "Invalid username or password";
 			}
 		}
-		$this->view('auth/index', ['errorMsg' => $errorMsg]);
+		$this->view('auth/index', ['errorMsg' => $error_msg]);
 	}
 
 	public function signup()
@@ -60,9 +61,9 @@ class AuthController extends Controller
 				echo "cant have empty fields";
 			}
 
-			$userModel = $this->model("User");
+			$user_model = $this->model("User");
 
-			$result = $userModel->createUser($username, $email, $password);
+			$result = $user_model->createUser($username, $email, $password);
 
 			if ($result) {
 				// TODO decidir o que fazer
@@ -70,8 +71,8 @@ class AuthController extends Controller
 				exit();
 
 			}
-			$errorMsg = "username or email already in use";
-			$this->view('auth/signup', ['errorMsg' => $errorMsg]);
+			$error_msg = "username or email already in use";
+			$this->view('auth/signup', ['errorMsg' => $error_msg]);
 		}
 	}
 

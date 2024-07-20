@@ -2,19 +2,19 @@
 
 class DashboardController extends Controller
 {
-	private static $canvasWidth;
-	private static $canvasHeight;
+	private static $canvas_width;
+	private static $canvas_height;
 
 	public function __construct()
 	{
 		checkLogin();
-		$this->canvasWidth = 320;
-		$this->canvasHeight = 240;
+		$this->canvas_width = 320;
+		$this->canvas_height = 240;
 	}
 
 	public function index()
 	{
-		$this->view("dashboard/index", ["canvasWidth" => $this->canvasWidth, "canvasHeight" => $this->canvasHeight]);
+		$this->view("dashboard/index", ["canvasWidth" => $this->canvas_width, "canvasHeight" => $this->canvas_height]);
 	}
 
 	public function upload($params = [])
@@ -25,25 +25,25 @@ class DashboardController extends Controller
 				exit;
 			}
 
-			$imageModel = $this->model("Image");
-			$image = $imageModel->getImage($params['imageId']);
+			$image_model = $this->model("Image");
+			$image = $image_model->getImage($params['imageId']);
 			if (!isset($image)) {
 				echo "cannot found image in the database";
 				exit;
 			}
 
-			$imageHashHex = bin2hex($image['hash']);
+			$image_hash_hex = bin2hex($image['hash']);
 
-			$filePath = "../../uploads/{$imageHashHex}.png";
-			if (!file_exists($filePath)) {
+			$file_path = "../../uploads/{$image_hash_hex}.png";
+			if (!file_exists($file_path)) {
 				echo "File does not exist";
 				exit;
 			}
-			$decodedImage = file_get_contents($filePath);
-			$base64Image = base64_encode($decodedImage);
-			$dataURL = "data:image/png;base64,{$base64Image}";
+			$decoded_image = file_get_contents($file_path);
+			$base64_image = base64_encode($decoded_image);
+			$data_url = "data:image/png;base64,{$base64_image}";
 
-			$this->view("/dashboard/upload", ["image" => $dataURL]);
+			$this->view("/dashboard/upload", ["image" => $data_url]);
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -51,28 +51,28 @@ class DashboardController extends Controller
 				echo "No image data recieved";
 				exit;
 			}
-			$imageData = $_POST['image'];
+			$image_data = $_POST['image'];
 
-			[, $imageData] = explode(';', $imageData);
-			[, $imageData] = explode(',', $imageData);
-			$decodedImage = base64_decode($imageData);
+			[, $image_data] = explode(';', $image_data);
+			[, $image_data] = explode(',', $image_data);
+			$decoded_image = base64_decode($image_data);
 
-			$fileHash = hash('sha256', $decodedImage);
-			$filePath = "../../uploads/{$fileHash}.png";
+			$file_hash = hash('sha256', $decoded_image);
+			$file_path = "../../uploads/{$file_hash}.png";
 
-			if (!file_put_contents($filePath, $decodedImage)) {
+			if (!file_put_contents($file_path, $decoded_image)) {
 				echo "Fail uploading image";
 			}
 
-			$imageModel = $this->model("Image");
-			$imageId = $imageModel->createImage($_SESSION['user_id'], $fileHash);
+			$image_model = $this->model("Image");
+			$image_id = $image_model->createImage($_SESSION['user_id'], $file_hash);
 
-			if (!$imageId) {
+			if (!$image_id) {
 				echo "Fail saving image to databse";
 				exit;
 			}
 
-			header("Location: /dashboard/upload?imageId={$imageId}");
+			header("Location: /dashboard/upload?imageId={$image_id}");
 		}
 	}
 }

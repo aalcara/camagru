@@ -2,15 +2,15 @@
 class Image extends Model
 {
 
-	public function createImage($ownerId, $hash)
+	public function createImage($owner_id, $hash)
 	{
-		$imageId = uniqid("", true);
+		$image_id = uniqid("", true);
 
 		$stmt = $this->db->prepare("INSERT INTO images (id, owner_id, hash) VALUES (?, ?, UNHEX(?))");
-		$stmt->bind_param('sss', $imageId, $ownerId, $hash);
+		$stmt->bind_param('sss', $image_id, $owner_id, $hash);
 
 		if ($stmt->execute()) {
-			return $imageId;
+			return $image_id;
 		} else {
 			return false;
 		}

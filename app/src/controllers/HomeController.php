@@ -6,8 +6,8 @@ class HomeController extends Controller
 {
 	public function index()
 	{
-		$userModel = new User();
-        $users = $userModel->getAllUsers();
+		$user_model = new User();
+        $users = $user_model->getAllUsers();
 
 		$this->view('home/index', ['users' => $users]);
 	}
