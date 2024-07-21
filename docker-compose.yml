@@ -8,12 +8,15 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./app/src:/var/www/html
-      - uploads:/var/www/uploads
+      # - uploads:/var/www/uploads
+      - ./uploads:/var/www/uploads
     environment:
       - MYSQL_HOST=db
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
+    depends_on:
+      - db
     networks:
       - camagru-network
 
@@ -26,7 +29,6 @@ services:
       - "8000:80"
     volumes:
       - ./app/src:/var/www/html
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - app
     networks:

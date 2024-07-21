@@ -4,17 +4,22 @@ class DashboardController extends Controller
 {
 	private static $canvas_width;
 	private static $canvas_height;
+	private static $superposable_images;
 
 	public function __construct()
 	{
 		checkLogin();
 		$this->canvas_width = 320;
 		$this->canvas_height = 240;
+		$this->superposable_images = [
+			"Mr. Bean" => "images/mr-bean.png",
+			"kitty" => "images/kitty.png",
+		];
 	}
 
 	public function index()
 	{
-		$this->view("dashboard/index", ["canvasWidth" => $this->canvas_width, "canvasHeight" => $this->canvas_height]);
+		$this->view("dashboard/index", ["canvasWidth" => $this->canvas_width, "canvasHeight" => $this->canvas_height, "superposableImages"=> $this->superposable_images]);
 	}
 
 	public function upload($params = [])
