@@ -37,18 +37,7 @@ class DashboardController extends Controller
 				exit;
 			}
 
-			$image_hash_hex = bin2hex($image['hash']);
-
-			$file_path = "../../uploads/{$image_hash_hex}.png";
-			if (!file_exists($file_path)) {
-				echo "File does not exist";
-				exit;
-			}
-			$decoded_image = file_get_contents($file_path);
-			$base64_image = base64_encode($decoded_image);
-			$data_url = "data:image/png;base64,{$base64_image}";
-
-			$this->view("/dashboard/upload", ["image" => $data_url]);
+			$this->view("/dashboard/upload", ["image" => $image]);
 		}
 
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -88,7 +77,7 @@ class DashboardController extends Controller
 			ob_end_clean();
 
 			$file_hash = hash('sha256', $final_image_data);
-			$file_path = "../../uploads/{$file_hash}.png";
+			$file_path = "./uploads/{$file_hash}.png";
 			if (!file_put_contents($file_path, $final_image_data)) {
 				echo "Fail uploading image";
 			}

@@ -3,6 +3,7 @@ require_once '../config.php';
 require_once '../controllers/Controller.php';
 require_once '../models/Model.php';
 require_once '../helpers/session_helper.php';
+require_once '../helpers/images_helper.php';
 
 $request_uri = $_SERVER['REQUEST_URI'];
 $request_uri = filter_var($request_uri, FILTER_SANITIZE_URL);
