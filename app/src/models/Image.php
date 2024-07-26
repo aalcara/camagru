@@ -24,4 +24,38 @@ class Image extends Model
 		$stmt->execute();
 		return $stmt->get_result()->fetch_assoc();
 	}
+
+	public function getPaginatedImages($limit = 10, $page = 1)
+	{
+		$offset = ($page - 1) * $limit;
+
+		$query = "
+            SELECT images.*, users.username AS owner
+            FROM images
+            JOIN users ON images.owner_id = users.id
+            ORDER BY images.created_at DESC
+            LIMIT ? OFFSET ?
+        ";
+		$stmt = $this->db->prepare($query);
+		if (!$stmt) {
+			die("Prepare failed: " . $this->db->error);
+		}
+
+		$stmt->bind_param("ii", $limit, $offset);
+		$stmt->execute();
+
+		$result = $stmt->get_result();
+		$images = $result->fetch_all(MYSQLI_ASSOC);
+
+		$stmt->close();
+		return $images;
+	}
+
+	public function getTotalImages()
+	{
+		$query = "SELECT COUNT(*) as total FROM images";
+		$result = $this->db->query($query);
+		$row = $result->fetch_assoc();
+		return $row['total'];
+	}
 }
